@@ -20,15 +20,12 @@ public class UserConfig {
             var hashedPassword= passwordEncoder.encode("Abc123.");
 
             User admin=new User("dhvani2510@gmail.com",hashedPassword);
-            User admin2=new User("dhvani25@gmail.com",hashedPassword);
 
             admin.setJoiningDate("2023-10-01");
-            admin2.setJoiningDate("2023-10-01");
             var existingIves= userRepository.findByEmail(admin.email);
-            var existingIves2= userRepository.findByEmail(admin2.email);
 
-            if(existingIves.isEmpty() || existingIves2.isEmpty()){
-                userRepository.saveAll(List.of(admin, admin2));
+            if(existingIves.isEmpty()){
+                userRepository.saveAll(List.of(admin));
             }
         };
     };

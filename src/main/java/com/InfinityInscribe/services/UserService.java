@@ -61,7 +61,7 @@ public class UserService {
     private  void authenticate(String email, String password) throws InfinityInscribeException {
 
         try{
-            var result =authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+            var result = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     email,
                     password
             ));

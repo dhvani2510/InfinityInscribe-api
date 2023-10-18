@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 
-@Document(collection = "users")
+@Document(collection = "User")
 public class User implements UserDetails {
     @Id
     public String id;
@@ -49,12 +49,12 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return email;
     }
 
     @Override
@@ -91,5 +91,9 @@ public class User implements UserDetails {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+        this.joiningDate = joiningDate;
     }
 }
