@@ -11,13 +11,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 
-@Document(collection = "User")
-public class User implements UserDetails {
+@Document(collection = "users")
+public class User extends BaseEntity implements UserDetails {
+    private String bio;
     @Id
-    public String id;
-    public String email;
-    public String username;
-    public String password;
+    private String id;
+    private String firstName;
+    private String lastName;
+
+    private String email;
+    private String username;
+    private String password;
+
+    public User() {}
 
     public String getId() {
         return id;
@@ -54,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -96,4 +102,98 @@ public class User implements UserDetails {
     public void setJoiningDate(LocalDate joiningDate) {
         this.joiningDate = joiningDate;
     }
+
+
+    private User(UserBuilder builder) {
+        this.firstName=builder.firstName;
+        this.lastName=builder.lastName;
+        this.id=builder.Id;
+        this.email=builder.Email;
+        this.password= builder.Password;
+        this.username = builder.username;
+        this.bio = builder.bio;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public static class UserBuilder{
+
+        // required parameters
+        private String firstName;
+        private String lastName;
+
+        // optional parameters
+        private String Id;
+        private String username;
+
+        private String Email;
+        private String Password;
+
+        private String bio;
+
+        public UserBuilder(String name, String surname){
+            this.firstName=name;
+            this.lastName=surname;
+        }
+
+        public UserBuilder setId(String id) {
+            this.Id = id;
+            return this;
+        }
+
+        public UserBuilder setEmail(String email) {
+            this.Email = email;
+            return this;
+        }
+        public UserBuilder setPassword(String password) {
+            this.Password = password;
+            return this;
+        }
+
+        public User build(){
+            return new User(this);
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public UserBuilder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public String getBio() {
+            return bio;
+        }
+
+        public UserBuilder setBio(String bio) {
+            this.bio = bio;
+            return  this;
+        }
+    }
+
+
 }

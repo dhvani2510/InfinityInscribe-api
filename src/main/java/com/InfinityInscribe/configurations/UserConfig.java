@@ -22,7 +22,8 @@ public class UserConfig {
             User admin=new User("dhvani2510@gmail.com",hashedPassword);
 
             admin.setJoiningDate("2023-10-01");
-            var existingIves= userRepository.findByEmail(admin.email);
+            admin.setUsername("dsheth");
+            var existingIves= userRepository.findByEmail(admin.getEmail());
 
             if(existingIves.isEmpty()){
                 userRepository.saveAll(List.of(admin));

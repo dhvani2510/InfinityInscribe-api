@@ -1,6 +1,7 @@
 package com.InfinityInscribe.controllers;
 
 import com.InfinityInscribe.models.AuthenticationRequest;
+import com.InfinityInscribe.models.RegisterRequest;
 import com.InfinityInscribe.models.ResponseModel;
 import com.InfinityInscribe.services.UserService;
 import com.InfinityInscribe.shared.exceptions.InfinityInscribeException;
@@ -9,10 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -26,22 +24,22 @@ public class AuthController {
         this.userService = userService;
     }
 
-//    @PostMapping("register")
-//    public ResponseEntity<ResponseModel> Register(@RequestBody RegisterRequest registerRequest){
-//
-//        try{
-//            var response=userService.register(registerRequest);
-//            return ResponseModel.Ok("User registered", response);
-//        }
-//        catch (InfinityInscribeException e){
-//            logger.error(e.getMessage());
-//            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
-//        }
-//        catch (Exception e){
-//            logger.error(e.getMessage());
-//            return ResponseModel.Fail("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PostMapping("signup")
+    public ResponseEntity<ResponseModel> Register(@RequestBody RegisterRequest registerRequest){
+
+        try{
+            var response=userService.register(registerRequest);
+            return ResponseModel.Ok("User registered", response);
+        }
+        catch (InfinityInscribeException e){
+            logger.error(e.getMessage());
+            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseModel.Fail("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @PostMapping("login")
     public ResponseEntity<ResponseModel> Authentication(@RequestBody AuthenticationRequest authenticationRequest)
@@ -59,4 +57,21 @@ public class AuthController {
             return ResponseModel.Fail("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("validate-username")
+    public ResponseEntity<ResponseModel> validateUsername(@RequestParam String username)  {
+        try{
+            var response=userService.validateUsername(username);
+            return ResponseModel.Ok("User authenticated", response);
+        }
+        catch (InfinityInscribeException e){
+            logger.error(e.getMessage());
+            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            logger.error(e.getMessage());
+            return ResponseModel.Fail("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
