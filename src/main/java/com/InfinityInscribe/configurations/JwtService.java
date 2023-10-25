@@ -37,7 +37,7 @@ public class JwtService
     public  String GenerateToken(@NotNull Map<String,Object> extraClaims, @NotNull User user){
 
         return Jwts.builder().setClaims(extraClaims)
-                .setIssuer("Arclight.com")
+                .setIssuer("InfinityInscribe.com")
                 .setId(user.getId())
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -52,12 +52,6 @@ public class JwtService
         var username= user.getUsername();
         var isTokenExpired=IsTokenExpired(jwtToken);
         var isTokenValid= (email.equals(username)) && !isTokenExpired; // GEt email
-        return isTokenValid;
-    }
-    public  boolean IsTokenValid(String jwtToken, @NotNull User user){
-
-        final  String email= ExtractEmail(jwtToken);
-        var isTokenValid= (email.equals(user.getEmail())) && !IsTokenExpired(jwtToken);
         return isTokenValid;
     }
 
