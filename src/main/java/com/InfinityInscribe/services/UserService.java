@@ -1,6 +1,7 @@
 package com.InfinityInscribe.services;
 
 import com.InfinityInscribe.configurations.JwtService;
+import com.InfinityInscribe.entities.Blog;
 import com.InfinityInscribe.entities.User;
 import com.InfinityInscribe.models.AuthenticationRequest;
 import com.InfinityInscribe.models.AuthenticationResponse;
@@ -18,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.InfinityInscribe.shared.helpers.StringHelper.StringIsNullOrEmpty;
@@ -129,5 +131,27 @@ public class UserService {
     private boolean emailIsValid(String email) {
         var EMAIL = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
         return EMAIL.matcher(email).matches();
+    }
+
+    public User getUser() throws InfinityInscribeException {
+        logger.info("Getting user profile");
+        var auth= SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.isAuthenticated()){ // toggle this
+            var details= auth.getDetails();
+            logger.error("User {} is not authenticated", details);
+            throw  new InfinityInscribeException("user is not authenticated");
+        }
+        var user= (User)auth.getPrincipal();
+//        var u= userRepository.findById(user.Id)
+//                .orElseThrow(()-> new ArclightException("User not found"));
+        if(user== null)
+            throw  new InfinityInscribeException("User not found");
+
+        return user;
+    }
+
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }
