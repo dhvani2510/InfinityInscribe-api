@@ -1,10 +1,7 @@
 package com.InfinityInscribe.controllers;
 
 import com.InfinityInscribe.entities.Blog;
-import com.InfinityInscribe.models.CommentRequest;
-import com.InfinityInscribe.models.CreateBlog;
-import com.InfinityInscribe.models.LikeRequest;
-import com.InfinityInscribe.models.ResponseModel;
+import com.InfinityInscribe.models.*;
 import com.InfinityInscribe.services.BlogService;
 import com.InfinityInscribe.shared.exceptions.InfinityInscribeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,19 +63,6 @@ public class BlogController {
         }
     }
 
-    @PostMapping("/comment")
-    public ResponseEntity<ResponseModel> updateComment(@RequestBody CommentRequest comment)  {
-        try{
-            Blog blog = blogService.updateComment(comment);
-            return ResponseModel.Ok("Blog updated",blog);
-        }
-        catch (InfinityInscribeException e){
-            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-        catch (Exception e) {
-            return ResponseModel.Fail("Error occured", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @PostMapping("/create")
     public ResponseEntity<ResponseModel> createBlog(@RequestBody CreateBlog createBlog)  {
@@ -95,10 +79,10 @@ public class BlogController {
     }
 
     @GetMapping("/getBlog/{id}")
-    public ResponseEntity<ResponseModel> getBlogsByUser(@PathVariable String id) {
+    public ResponseEntity<ResponseModel> getBlogById(@PathVariable String id) {
         try{
-            List<Blog> blogs = blogService.getBlogsByUser(id);
-            return ResponseModel.Ok("All recent blogs fetched",blogs);
+            var blog = blogService.getBlogById(id);
+            return ResponseModel.Ok("All recent blogs fetched",blog);
         }
         catch (InfinityInscribeException e){
             return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -106,6 +90,40 @@ public class BlogController {
         catch (Exception e){
             return ResponseModel.Fail("Error occured", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/getNyBlog/{id}")
+    public ResponseEntity<ResponseModel> getBlogsByUser(@PathVariable String id) {
+        try{
+            var blog = blogService.getBlogByUser(id);
+            return ResponseModel.Ok("All recent blogs fetched",blog);
+        }
+        catch (InfinityInscribeException e){
+            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return ResponseModel.Fail("Error occured", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<ResponseModel> updateBlog(@RequestBody UpdateBlogRequest request) {
+        try{
+            var blog = blogService.updateBlog(request);
+            return ResponseModel.Ok("Blog updated successfully",blog);
+        }
+        catch (InfinityInscribeException e){
+            return ResponseModel.Fail(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        catch (Exception e){
+            return ResponseModel.Fail("Error occured", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseModel> deleteBlog(@PathVariable String id) {
+        blogService.deleteBlog(id);
+        return ResponseModel.Ok("Success","Blog deleted");
     }
 }
 

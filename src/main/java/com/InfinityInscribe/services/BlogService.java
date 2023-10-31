@@ -6,6 +6,7 @@ import com.InfinityInscribe.entities.Like;
 import com.InfinityInscribe.entities.User;
 import com.InfinityInscribe.models.CommentRequest;
 import com.InfinityInscribe.models.CreateBlog;
+import com.InfinityInscribe.models.UpdateBlogRequest;
 import com.InfinityInscribe.repositories.BlogRepository;
 import com.InfinityInscribe.repositories.CommentRepository;
 import com.InfinityInscribe.repositories.LikeRepository;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.InfinityInscribe.shared.helpers.StringHelper.StringIsNullOrEmpty;
 
@@ -150,15 +152,52 @@ public class BlogService {
         return blogRepository.save(newBlog);
     }
 
-    public List<Blog> getBlogsByUser(String id) throws InfinityInscribeException {
+    public Optional<Blog> getBlogById(String id) throws InfinityInscribeException {
         var auth= SecurityContextHolder.getContext().getAuthentication();
         if(!auth.isAuthenticated()){ // toggle this
             var details= auth.getDetails();
             logger.error("User {} is not authenticated", details);
             throw  new InfinityInscribeException("user is not authenticated");
         }
-        var user= (User)auth.getPrincipal();
-        return  blogRepository.findByAuthor(user);
+        return blogRepository.findById(id);
+    }
+
+    public void deleteComment(String id) {
+        commentRepository.deleteById(id);
+    }
+
+    public List<Blog> getBlogByUser(String id) throws InfinityInscribeException {
+        var auth= SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.isAuthenticated()){ // toggle this
+            var details= auth.getDetails();
+            logger.error("User {} is not authenticated", details);
+            throw  new InfinityInscribeException("user is not authenticated");
+        }
+        var user = (User)auth.getPrincipal();
+        return blogRepository.findByAuthor(user);
+    }
+
+    public void deleteBlog(String id) {
+        blogRepository.deleteById(id);
+    }
+
+    public Blog updateBlog(UpdateBlogRequest request) throws InfinityInscribeException {
+        Blog blog = blogRepository.findById(request.getBlogId())
+                .orElseThrow(()-> new InfinityInscribeException("Blog not found"));
+        if (blog != null) {
+            var auth= SecurityContextHolder.getContext().getAuthentication();
+            if(!auth.isAuthenticated()){ // toggle this
+                var details= auth.getDetails();
+                logger.error("User {} is not authenticated", details);
+                throw  new InfinityInscribeException("user is not authenticated");
+            }
+            blog.setCategory(request.getCategory());
+            blog.setTitle(request.getTitle());
+            blog.setContent(request.getDescription());
+            return  blogRepository.save(blog);
+        }
+        else
+            throw  new InfinityInscribeException("Blog not found");
     }
 }
 
